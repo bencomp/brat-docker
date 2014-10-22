@@ -1,13 +1,13 @@
-# start from a base ubuntu image
-FROM ubuntu
-MAINTAINER Cass Johnston <cassjohnston@gmail.com>
+# This Dockerfile is based on cassj's Dockerfile at https://github.com/cassj/brat-docker/Dockerfile
+
+# start from a base debian image
+FROM debian:wheezy
+MAINTAINER Ben Companjen <ben@companjen.name>
 
 # Install pre-reqs
-RUN apt-get update
-RUN apt-get install -y curl vim
-RUN apt-get install -y apache2
-RUN apt-get install -y python
-RUN apt-get install -y supervisor
+RUN apt-get update \
+    && apt-get install -y curl apache2 python supervisor \
+    && rm -rf /var/lib/apt/lists/*
 
 # Fetch  brat
 RUN mkdir /var/www/brat
@@ -35,8 +35,6 @@ RUN chown -R www-data:www-data /var/www/brat/brat-v1.3_Crunchy_Frog/
 
 ADD 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-
-
 # Enable cgi
 RUN a2enmod cgi
 
@@ -49,8 +47,4 @@ RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
 
 CMD ["/usr/bin/supervisord"]
-
-
-
-
 
